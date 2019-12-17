@@ -2,9 +2,9 @@
   "name": "projet-node-vue",
   "version": "1.0.0",
   "description": "projet node vue",
-  "main": "back/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node back/index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
