@@ -17,19 +17,20 @@ app.get('/getArticles', async function (req, res) {
 })
 
 app.get('/getArticle/:id', async function (req, res) {
-	const articles = await article.getOneArticleById(req.params.id)
-	res.send(articles)
+	const article = await article.getArticle(req.params.id)
+	res.send(article)
 })
 
 app.get('/insertArticle', async function (req, res) {
 	//article = ?
-	const articles = await article.deleteArticle(article)
-	res.send(articles)
+	let unArticle={id:4,titre:"Quelle est la différence entre la flexibilité et l'agilité ?",date:"17/12/2019 04:45:12",description:"Baise tes morts"}
+	const repInsert=await article.insertArticle(unArticle)
+	res.send(repInsert)
 })
 
 app.get('/updateArticle/:id', async function (req, res) {
 	//article = ?
-	const articles = await article.deleteArticle(req.params.id,article)
+	const articles = await article.updateArticle(req.params.id,article)
 	res.send(articles)
 })
 

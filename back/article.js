@@ -1,10 +1,10 @@
 const db=require('./db.js')
 const axios = require('axios').default;
-const url=db.DB_ADDR+"article"
+const urlConst=db.DB_ADDR+"article"
 
 async function getArticles()
 {
-	return await axios.get(url,db.DB_HEADERS).then(resp => 
+	return await axios.get(urlConst,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data
 
@@ -16,7 +16,8 @@ async function getArticles()
 
 async function getArticle(id)
 {
-	url+="/"+id
+	let url=urlConst+"/"+id
+	//let url=urlConst+"?id="+id
 	return await axios.get(url,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data
@@ -29,8 +30,9 @@ async function getArticle(id)
 
 async function insertArticle(article)
 {
-	return await axios.put(url,article,db.DB_HEADERS).then(resp => 
+	return await axios.post(urlConst,article,db.DB_HEADERS).then(resp => 
 	{
+		console.log(article)
 		return resp.data
 
 	}).catch(fail=>
@@ -41,8 +43,8 @@ async function insertArticle(article)
 
 async function updateArticle(article)
 {
-	url+="/"+id
-	return await axios.update(url,article,db.DB_HEADERS).then(resp => 
+	let url=urlConst+"/"+id
+	return await axios.put(url,article,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data
 
@@ -54,7 +56,7 @@ async function updateArticle(article)
 
 async function deleteArticle(id)
 {
-	url+="/"+id
+	let url=urlConst+"/"+id
 	return await axios.delete(url,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data
