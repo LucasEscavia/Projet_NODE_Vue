@@ -32,7 +32,6 @@ async function insertArticle(article)
 {
 	return await axios.post(urlConst,article,db.DB_HEADERS).then(resp => 
 	{
-		console.log(article)
 		return resp.data
 
 	}).catch(fail=>
@@ -43,7 +42,7 @@ async function insertArticle(article)
 
 async function updateArticle(article)
 {
-	let url=urlConst+"/"+id
+	let url=urlConst+"/"+article.id
 	return await axios.put(url,article,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data

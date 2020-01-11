@@ -17,20 +17,29 @@ app.get('/getArticles', async function (req, res) {
 })
 
 app.get('/getArticle/:id', async function (req, res) {
-	const article = await article.getArticle(req.params.id)
-	res.send(article)
+	const unArticle = await article.getArticle(req.params.id)
+	res.send(unArticle)
 })
 
-app.get('/insertArticle', async function (req, res) {
-	//article = ?
-	let unArticle={id:4,titre:"Quelle est la différence entre la flexibilité et l'agilité ?",date:"17/12/2019 04:45:12",description:"Baise tes morts"}
+app.get('/insertArticle/:titre.:description', async function (req, res) {
+	let params=req.params
+	let unArticle={
+		id:null,
+		titre:params.titre,
+		date: Date.now(),
+		description:params.description}
 	const repInsert=await article.insertArticle(unArticle)
 	res.send(repInsert)
 })
 
-app.get('/updateArticle/:id', async function (req, res) {
-	//article = ?
-	const articles = await article.updateArticle(req.params.id,article)
+app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
+	let params=req.params
+	let unArticle={
+		id:params.id,
+		titre:params.titre,
+		date: Date.now(),
+		description:params.description}
+	const articles = await article.updateArticle(unArticle)
 	res.send(articles)
 })
 
@@ -43,3 +52,4 @@ app.get('/deleteArticle/:id', async function (req, res) {
 app.listen(PORT, function () {
   console.log('J écoute sur le port suivant :  ' + PORT)
 })
+
