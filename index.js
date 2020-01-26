@@ -13,15 +13,19 @@ app.get('/', function (req, res) {
 
 app.get('/getArticles', async function (req, res) {
 	const articles = await article.getArticles()
-	res.send(articles)
+	res.json(articles)
 })
 
 app.get('/getArticle/:id', async function (req, res) {
 	const unArticle = await article.getArticle(req.params.id)
-	res.send(unArticle)
+	res.json(unArticle)
 })
 
 app.get('/insertArticle/:titre.:description', async function (req, res) {
+	/*if(pasConnecte)
+	{
+		res.send(); //error
+	}*/
 	let params=req.params
 	let unArticle={
 		id:null,
