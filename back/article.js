@@ -17,7 +17,6 @@ async function getArticles()
 async function getArticle(id)
 {
 	let url=urlConst+"/"+id
-	//let url=urlConst+"?id="+id
 	return await axios.get(url,db.DB_HEADERS).then(resp => 
 	{
 		return resp.data
