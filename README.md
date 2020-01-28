@@ -11,5 +11,5 @@ Liste des routes pour CRUD Article :
   Supprimer un article : /deleteArticle/ID_ARTICLE
 
 Liste des routes pour CRUD User : 
-    Se loger : /login (Param en POST : login : LOGIN_USER & password : MDP_USER)
-    Créer un compte : /insertUtilisateur/LOGIN_USER (Mot de passe généré aléatoirement)
+  Se loger : /login (Param en POST : login : LOGIN_USER & password : MDP_USER)
+  Créer un compte : /insertUtilisateur/LOGIN_USER (Mot de passe généré aléatoirement)

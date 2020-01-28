@@ -28,7 +28,7 @@ app.get('/insertArticle/:titre.:description', async function (req, res) {
 	}*/
 	if (req.session.passport.user == null )
 	{
-		res.send('Pas autorisé fdp');
+		res.send('Pas autorisé');
 	}
 	else
 	{
@@ -45,13 +45,14 @@ app.get('/insertArticle/:titre.:description', async function (req, res) {
 })
 
 app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
-	if (req.session.passport.user == null )
+	let params=req.params
+	const unArticleBase = await article.getArticle(params.id)
+	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id)
 	{
 		res.redirect('/');
 	}
 	else
 	{
-		let params=req.params
 		let unArticle={
 		id:params.id,
 		titre:params.titre,
@@ -64,13 +65,15 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 })
 
 app.get('/deleteArticle/:id', async function (req, res) {
-	if (req.session.passport.user == null )
+	let params=req.params
+	const unArticleBase = await article.getArticle(params.id)
+	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id )
 	{
 		res.redirect('/');
 	}
 	else
 	{
-		const articles = await article.deleteArticle(req.params.id)
+		const articles = await article.deleteArticle(params.id)
 		res.send(articles)
 	}
 })
