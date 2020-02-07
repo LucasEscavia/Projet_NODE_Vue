@@ -47,7 +47,7 @@ async function getUtilisateurByLogin(login,password)
 
 module.exports =
 {
-  getUtilisateur: getUtilisateur,
+	getUtilisateur: getUtilisateur,
 	getUtilisateurByLogin: getUtilisateurByLogin,
-  insertUtilisateur: insertUtilisateur,
+	insertUtilisateur: insertUtilisateur,
 }

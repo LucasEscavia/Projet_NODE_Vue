@@ -111,10 +111,10 @@ app.get('/insertUtilisateur/:login.:password', async function (req, res)
 	crypted += cipher.final('hex');
 
 	let unUtilisateur=
-  {
+	{
 		login:params.login,
 		password:crypted
-  }
+	}
 	const repInsertUtilisateur=await user.insertUtilisateur(unUtilisateur)
 	if (repInsertUtilisateur == false)
 	{
@@ -141,7 +141,6 @@ app.post('/login', urlEncodedParser,async function (req, res)
    res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
    return
   }
-
   else
   {
     let infoUtilisateur = utilisateur[0]
