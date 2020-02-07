@@ -4,8 +4,27 @@ const axios = require('axios')
 const article = require('./back/article.js')
 const user = require('./back/user.js')
 const crypto = require('crypto')
+const passport = require('passport')
+const passportJWT = require('passport-jwt')
+const jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser')
+
 const algorithme = 'aes256'
 const cleDeChiffrement = 'l5JmP+G0/1zB%;r8B8?2?2pcqGcL^3'
+
+const secret = 'Le[+36>6(gJW*/>E:&,K'
+const urlEncodedParser = bodyParser.urlencoded({ extended: false })
+const ExtractJwt = passportJWT.ExtractJwt
+const JwtStrategy = passportJWT.Strategy
+const jwtOptions =
+{
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: secret
+}
+
+
+
+
 const app = express()
 const PORT = process.env.PORT || 5000
 
@@ -56,14 +75,16 @@ app.get('/deleteArticle/:id', async function (req, res) {
 app.get('/insertUtilisateur/:login.:password', async function (req, res)
 {
 	let params=req.params
-	
+
 	let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
 	let crypted = cipher.update(params.password,'utf8','hex')
 	crypted += cipher.final('hex');
 
-	let unUtilisateur={
+	let unUtilisateur=
+  {
 		login:params.login,
-		password:crypted}
+		password:crypted
+  }
 	const repInsertUtilisateur=await user.insertUtilisateur(unUtilisateur)
 	if (repInsertUtilisateur == false)
 	{
@@ -71,6 +92,52 @@ app.get('/insertUtilisateur/:login.:password', async function (req, res)
 	}
 	res.send(repInsertUtilisateur)
 })
+
+app.post('/login', urlEncodedParser,async function (req, res)
+{
+	let login = req.body.login
+  let password = req.body.password
+
+  if (!login || !password)
+	{
+    res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
+    return
+  }
+
+  const utilisateur = await user.getUtilisateurByLogin(login,cryptPassword(password))
+  console.log(Object.entries(utilisateur))
+  if (Object.entries(utilisateur).length === 0)
+  {
+   res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
+   return
+  }
+
+  else
+  {
+    let infoUtilisateur = utilisateur[0]
+    let loginUtilisateur = infoUtilisateur.login
+    const userJwt = jwt.sign({ utilisateur: loginUtilisateur }, secret)
+    res.json({ jwt: userJwt })
+  }
+
+
+})
+
+function decryptPassword(password)
+{
+  let decipher = crypto.createDecipher(algorithme,cleDeChiffrement)
+  let dec = decipher.update(password,'hex','utf8')
+  dec =+ decipher.final('utf8')
+  return dec
+}
+
+function cryptPassword(password)
+{
+  let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
+	let crypted = cipher.update(password,'utf8','hex')
+	crypted += cipher.final('hex')
+  return crypted
+}
 
 app.listen(PORT, function () {
   console.log('J écoute sur le port suivant :  ' + PORT)

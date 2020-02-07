@@ -30,10 +30,24 @@ async function insertUtilisateur(utilisateur)
 	})
 }
 
+async function getUtilisateurByLogin(login,password)
+{
+	//let url=urlConst+"/"+login
+	var url = urlConst + '?q={' + '"login":' + '"' + login + '"' + ',"password" :' + '"' + password + '"' + '}'
+	return await axios.get(url,db.DB_HEADERS).then(resp =>
+	{
+		return resp.data
+	}).catch(fail=>
+	{
+		return fail
+	})
+}
+
 
 
 module.exports =
 {
   getUtilisateur: getUtilisateur,
+	getUtilisateurByLogin: getUtilisateurByLogin,
   insertUtilisateur: insertUtilisateur,
 }
