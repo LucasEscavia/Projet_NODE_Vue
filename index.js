@@ -36,39 +36,69 @@ app.get('/', function (req, res) {
 
 app.get('/getArticles', async function (req, res) {
 	const articles = await article.getArticles()
-	res.send(articles)
+	res.json(articles)
 })
 
 app.get('/getArticle/:id', async function (req, res) {
 	const unArticle = await article.getArticle(req.params.id)
-	res.send(unArticle)
+	res.json(unArticle)
 })
 
 app.get('/insertArticle/:titre.:description', async function (req, res) {
-	let params=req.params
-	let unArticle={
-		id:null,
+	/*if(pasConnecte)
+	{
+		res.send(); //error
+	}*/
+	if (req.session.passport.user == null )
+	{
+		res.send('Pas autorisé');
+	}
+	else
+	{
+		let params=req.params
+		let unArticle={
 		titre:params.titre,
 		date: Date.now(),
-		description:params.description}
-	const repInsert=await article.insertArticle(unArticle)
-	res.send(repInsert)
+		description:params.description,
+		idUtilisateur:req.session.passport.user._id}
+		const repInsert=await article.insertArticle(unArticle)
+		res.send(repInsert)
+	}
+	
 })
 
 app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 	let params=req.params
-	let unArticle={
+	const unArticleBase = await article.getArticle(params.id)
+	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id)
+	{
+		res.redirect('/');
+	}
+	else
+	{
+		let unArticle={
 		id:params.id,
 		titre:params.titre,
 		date: Date.now(),
 		description:params.description}
-	const articles = await article.updateArticle(unArticle)
-	res.send(articles)
+		const articles = await article.updateArticle(unArticle)
+		res.send(articles)
+	}
+	
 })
 
 app.get('/deleteArticle/:id', async function (req, res) {
-	const articles = await article.deleteArticle(req.params.id)
-	res.send(articles)
+	let params=req.params
+	const unArticleBase = await article.getArticle(params.id)
+	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id )
+	{
+		res.redirect('/');
+	}
+	else
+	{
+		const articles = await article.deleteArticle(params.id)
+		res.send(articles)
+	}
 })
 
 
