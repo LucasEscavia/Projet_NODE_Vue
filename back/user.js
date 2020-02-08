@@ -27,9 +27,21 @@ async function insertUtilisateur(utilisateur)
 	})
 }
 
-async function getUtilisateurByLogin(login,password)
+async function getUtilisateurByLoginAndPassword(login,password)
 {
 	var url = urlConst + '?q={' + '"login":' + '"' + login + '"' + ',"password" :' + '"' + password + '"' + '}'
+	return await axios.get(url,db.DB_HEADERS).then(resp =>
+	{
+		return resp.data
+	}).catch(fail=>
+	{
+		return fail
+	})
+}
+
+async function getUtilisateurByLogin(login)
+{
+	var url = urlConst + '?q={' + '"login":' + '"' + login + '"}'
 	return await axios.get(url,db.DB_HEADERS).then(resp =>
 	{
 		return resp.data
@@ -42,6 +54,7 @@ async function getUtilisateurByLogin(login,password)
 module.exports =
 {
 	getUtilisateur: getUtilisateur,
-	getUtilisateurByLogin: getUtilisateurByLogin,
+	getUtilisateurByLoginAndPassword: getUtilisateurByLoginAndPassword,
 	insertUtilisateur: insertUtilisateur,
+	getUtilisateurByLogin: getUtilisateurByLogin
 }

@@ -19,6 +19,20 @@ const jwtOptions =
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: secret
 }
+
+const jwtStrategy = new JwtStrategy(jwtOptions, async function(payload, next) {
+
+  const utilisateur = await user.getUtilisateurByLogin(payload.login)
+  // const user = user.find(user => user.email === payload.user
+  if (utilisateur) {
+    next(null, utilisateur)
+  } else {
+    next(null, false)
+  }
+})
+
+passport.use(jwtStrategy)
+
 const app = express()
 const PORT = process.env.PORT || 5000
 passport.use(JwtStrategy)
@@ -29,6 +43,10 @@ app.get('/', function (req, res) {
 	const userJwt = jwt.sign({ utilisateur: "max" }, secret)
 		res.json({ jwt: userJwt })
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
+})
+
+app.get('/private', passport.authenticate('jwt', { session: false }), async function (req, res) {
+  res.status(200).json({message : 'Bonjour à toi ' + req.user[0].login})
 })
 
 app.get('/getArticles', async function (req, res) {
@@ -124,7 +142,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
 	}
-	const utilisateur = await user.getUtilisateurByLogin(login,cryptPassword(password))
+	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
 	if (Object.entries(utilisateur).length === 0)
 	{
 		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
@@ -134,7 +152,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 	{
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
-		const userJwt = jwt.sign({ utilisateur: loginUtilisateur }, secret)
+		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
 		res.json({ jwt: userJwt })
 	}
 })
