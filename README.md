@@ -12,4 +12,6 @@ Liste des routes pour CRUD Article :
 
 Liste des routes pour CRUD User : 
   Se loger : /login (Param en POST : login : LOGIN_USER & password : MDP_USER)
-  Créer un compte : /insertUtilisateur/LOGIN_USER (Mot de passe généré aléatoirement)
+  Créer un compte : /insertUtilisateur (Param en POST : login : LOGIN_USER & password : MDP_USER)
+
+Pour installer le projet, il suffit de faire un npm install puis un node inex.js dans le répertoire du projet.

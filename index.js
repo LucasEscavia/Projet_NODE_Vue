@@ -27,7 +27,7 @@ passport.use(JwtStrategy)
 app.use(cors())
 
 app.get('/', function (req, res) {
-	res.send("<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>")
+	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
 })
 
 app.get('/getArticles', async function (req, res) {
@@ -40,15 +40,11 @@ app.get('/getArticle/:id', async function (req, res) {
 	res.json(unArticle)
 })
 
-app.get('/private', passport.authenticate('jwt', { session: false }), (req, res) => {
-	res.send('Hello ' + req.user.email)
-  })
-
 app.get('/insertArticle/:titre.:description', async function (req, res) {
 	if (req.session.passport.user == null )
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		res.redirect('/');
+		//res.redirect('/');
 	}
 	else
 	{
@@ -59,7 +55,7 @@ app.get('/insertArticle/:titre.:description', async function (req, res) {
 		description:params.description,
 		idUtilisateur:req.session.passport.user._id}
 		const repInsert=await article.insertArticle(unArticle)
-		res.send(repInsert)
+		res.json(repInsert)
 	}
 })
 
@@ -69,7 +65,7 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		res.redirect('/');
+		//res.redirect('/');
 	}
 	else
 	{
@@ -79,7 +75,7 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 		date: Date.now(),
 		description:params.description}
 		const articles = await article.updateArticle(unArticle)
-		res.send(articles)
+		res.json(articles)
 	}
 })
 
@@ -89,32 +85,33 @@ app.get('/deleteArticle/:id', async function (req, res) {
 	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id )
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		res.redirect('/');
+		//res.redirect('/');
 	}
 	else
 	{
 		const articles = await article.deleteArticle(params.id)
-		res.send(articles)
+		res.json(articles)
 	}
 })
 
-app.get('/insertUtilisateur/:login.:password', async function (req, res)
+app.post('/insertUtilisateur/', async function (req, res)
 {
-	let params=req.params
+	let login = req.body.login
+	let password = req.body.password
 	let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
-	let crypted = cipher.update(params.password,'utf8','hex')
+	let crypted = cipher.update(password,'utf8','hex')
 	crypted += cipher.final('hex');
 	let unUtilisateur=
 	{
-		login:params.login,
+		login:login,
 		password:crypted
 	}
 	const repInsertUtilisateur=await user.insertUtilisateur(unUtilisateur)
 	if (repInsertUtilisateur == false)
 	{
-		res.status(500).send("Une erreur s'est produite veuillez reessayer")
+		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 	}
-	res.send(repInsertUtilisateur)
+	res.json(repInsertUtilisateur)
 })
 
 app.post('/login', urlEncodedParser,async function (req, res)
