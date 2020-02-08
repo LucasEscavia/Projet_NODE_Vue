@@ -21,7 +21,6 @@ const jwtOptions =
 }
 
 const jwtStrategy = new JwtStrategy(jwtOptions, async function(payload, next) {
-
   const utilisateur = await user.getUtilisateurByLogin(payload.login)
   // const user = user.find(user => user.email === payload.user
   if (utilisateur) {
@@ -40,13 +39,7 @@ passport.use(JwtStrategy)
 app.use(cors())
 
 app.get('/', function (req, res) {
-	const userJwt = jwt.sign({ utilisateur: "max" }, secret)
-		res.json({ jwt: userJwt })
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
-})
-
-app.get('/private', passport.authenticate('jwt', { session: false }), async function (req, res) {
-  res.status(200).json({message : 'Bonjour à toi ' + req.user[0].login})
 })
 
 app.get('/getArticles', async function (req, res) {
@@ -59,29 +52,21 @@ app.get('/getArticle/:id', async function (req, res) {
 	res.json(unArticle)
 })
 
-app.get('/insertArticle/:titre.:description', async function (req, res) {
-	if (req.session.passport.user == null )
-	{
-		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		//res.redirect('/');
-	}
-	else
-	{
-		let params=req.params
-		let unArticle={
-		titre:params.titre,
-		date: Date.now(),
-		description:params.description,
-		idUtilisateur:req.session.passport.user._id}
-		const repInsert=await article.insertArticle(unArticle)
-		res.json(repInsert)
-	}
+app.get('/insertArticle/:titre.:description',passport.authenticate('jwt', { session: false }), async function (req, res) {
+	let params=req.params
+	let unArticle={
+	titre:params.titre,
+	date: Date.now(),
+	description:params.description,
+	idUtilisateur:req.session.passport.user._id}
+	const repInsert=await article.insertArticle(unArticle)
+	res.json(repInsert)
 })
 
-app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
+app.get('/updateArticle/:id.:titre.:description', passport.authenticate('jwt', { session: false }),async function (req, res) {
 	let params=req.params
 	const unArticleBase = await article.getArticle(params.id)
-	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id)
+	if (unArticleBase.idUtilisateur!=req.user[0]._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 		//res.redirect('/');
@@ -98,10 +83,10 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 	}
 })
 
-app.get('/deleteArticle/:id', async function (req, res) {
+app.get('/deleteArticle/:id',passport.authenticate('jwt', { session: false }), async function (req, res) {
 	let params=req.params
 	const unArticleBase = await article.getArticle(params.id)
-	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id )
+	if (unArticleBase.idUtilisateur!=req.user[0]._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 		//res.redirect('/');
