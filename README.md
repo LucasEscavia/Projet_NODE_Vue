@@ -15,3 +15,7 @@ Liste des routes pour CRUD User :
   Créer un compte : /insertUtilisateur (Param en POST : login : LOGIN_USER & password : MDP_USER)
 
 Pour installer le projet, il suffit de faire un npm install puis un node inex.js dans le répertoire du projet.
+
+URL GitHub : https://github.com/LucasEscavia/Projet_NODE_Vue
+
+URL Projet : https://dashboard.heroku.com/apps/projet-node-vue
