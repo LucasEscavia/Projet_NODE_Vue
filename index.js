@@ -8,10 +8,8 @@ const passport = require('passport')
 const passportJWT = require('passport-jwt')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
-
 const algorithme = 'aes256'
 const cleDeChiffrement = 'l5JmP+G0/1zB%;r8B8?2?2pcqGcL^3'
-
 const secret = 'Le[+36>6(gJW*/>E:&,K'
 const urlEncodedParser = bodyParser.urlencoded({ extended: false })
 const ExtractJwt = passportJWT.ExtractJwt
@@ -21,12 +19,10 @@ const jwtOptions =
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: secret
 }
-
-
-
-
 const app = express()
 const PORT = process.env.PORT || 5000
+
+passport.use(JwtStrategy)
 
 app.use(cors())
 
@@ -44,14 +40,15 @@ app.get('/getArticle/:id', async function (req, res) {
 	res.json(unArticle)
 })
 
+app.get('/private', passport.authenticate('jwt', { session: false }), (req, res) => {
+	res.send('Hello ' + req.user.email)
+  })
+
 app.get('/insertArticle/:titre.:description', async function (req, res) {
-	/*if(pasConnecte)
-	{
-		res.send(); //error
-	}*/
 	if (req.session.passport.user == null )
 	{
-		res.send('Pas autorisé');
+		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
+		res.redirect('/');
 	}
 	else
 	{
@@ -64,7 +61,6 @@ app.get('/insertArticle/:titre.:description', async function (req, res) {
 		const repInsert=await article.insertArticle(unArticle)
 		res.send(repInsert)
 	}
-	
 })
 
 app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
@@ -72,6 +68,7 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 	const unArticleBase = await article.getArticle(params.id)
 	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id)
 	{
+		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 		res.redirect('/');
 	}
 	else
@@ -84,7 +81,6 @@ app.get('/updateArticle/:id.:titre.:description', async function (req, res) {
 		const articles = await article.updateArticle(unArticle)
 		res.send(articles)
 	}
-	
 })
 
 app.get('/deleteArticle/:id', async function (req, res) {
@@ -92,6 +88,7 @@ app.get('/deleteArticle/:id', async function (req, res) {
 	const unArticleBase = await article.getArticle(params.id)
 	if (req.session.passport.user == null || unArticleBase.idUtilisateur!=req.session.passport.user._id )
 	{
+		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 		res.redirect('/');
 	}
 	else
@@ -101,15 +98,12 @@ app.get('/deleteArticle/:id', async function (req, res) {
 	}
 })
 
-
 app.get('/insertUtilisateur/:login.:password', async function (req, res)
 {
 	let params=req.params
-
 	let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
 	let crypted = cipher.update(params.password,'utf8','hex')
 	crypted += cipher.final('hex');
-
 	let unUtilisateur=
 	{
 		login:params.login,
@@ -126,48 +120,43 @@ app.get('/insertUtilisateur/:login.:password', async function (req, res)
 app.post('/login', urlEncodedParser,async function (req, res)
 {
 	let login = req.body.login
-  let password = req.body.password
-
-  if (!login || !password)
+	let password = req.body.password
+	if (!login || !password)
 	{
-    res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
-    return
-  }
-
-  const utilisateur = await user.getUtilisateurByLogin(login,cryptPassword(password))
-  console.log(Object.entries(utilisateur))
-  if (Object.entries(utilisateur).length === 0)
-  {
-   res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
-   return
-  }
-  else
-  {
-    let infoUtilisateur = utilisateur[0]
-    let loginUtilisateur = infoUtilisateur.login
-    const userJwt = jwt.sign({ utilisateur: loginUtilisateur }, secret)
-    res.json({ jwt: userJwt })
-  }
-
-
+		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
+		return
+	}
+	const utilisateur = await user.getUtilisateurByLogin(login,cryptPassword(password))
+	if (Object.entries(utilisateur).length === 0)
+	{
+		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
+		return
+	}
+	else
+	{
+		let infoUtilisateur = utilisateur[0]
+		let loginUtilisateur = infoUtilisateur.login
+		const userJwt = jwt.sign({ utilisateur: loginUtilisateur }, secret)
+		res.json({ jwt: userJwt })
+	}
 })
 
 function decryptPassword(password)
 {
-  let decipher = crypto.createDecipher(algorithme,cleDeChiffrement)
-  let dec = decipher.update(password,'hex','utf8')
-  dec =+ decipher.final('utf8')
-  return dec
+	let decipher = crypto.createDecipher(algorithme,cleDeChiffrement)
+	let dec = decipher.update(password,'hex','utf8')
+	dec =+ decipher.final('utf8')
+	return dec
 }
 
 function cryptPassword(password)
 {
-  let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
+	let cipher = crypto.createCipher(algorithme,cleDeChiffrement)
 	let crypted = cipher.update(password,'utf8','hex')
 	crypted += cipher.final('hex')
-  return crypted
+	return crypted
 }
 
 app.listen(PORT, function () {
-  console.log('J écoute sur le port suivant :  ' + PORT)
+	console.log('J écoute sur le port suivant :  ' + PORT)
 })
