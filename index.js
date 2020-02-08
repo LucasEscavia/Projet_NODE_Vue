@@ -21,12 +21,13 @@ const jwtOptions =
 }
 const app = express()
 const PORT = process.env.PORT || 5000
-
 passport.use(JwtStrategy)
 
 app.use(cors())
 
 app.get('/', function (req, res) {
+	const userJwt = jwt.sign({ utilisateur: "max" }, secret)
+		res.json({ jwt: userJwt })
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
 })
 
