@@ -3,6 +3,8 @@
 Ce blog permet de consulter des articles et d'en créer/modifier/supprimer seulement si on est connecté.
 Il est également possible de se créer un compte.
 
+
+
 Liste des routes pour CRUD Article : 
 
   Obtenir les articles : /getArticles
@@ -16,11 +18,16 @@ Liste des routes pour CRUD Article :
   Supprimer un article : /deleteArticle/ID_ARTICLE
   
 
+
+
 Liste des routes pour CRUD User : 
 
   Se loger : /login (Param en POST : login : LOGIN_USER & password : MDP_USER)
   
   Créer un compte : /insertUtilisateur (Param en POST : login : LOGIN_USER & password : MDP_USER)
+
+
+
 
 Pour installer le projet, il suffit de faire un npm install puis un node inex.js dans le répertoire du projet.
 
