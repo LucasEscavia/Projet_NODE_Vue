@@ -2,12 +2,9 @@ const db=require('./db.js')
 const axios = require('axios').default;
 const urlConst=db.DB_ADDR+"utilisateur"
 
-
-
 async function getUtilisateur(id)
 {
 	let url=urlConst+"/"+id
-	//let url=urlConst+"?id="+id
 	return await axios.get(url,db.DB_HEADERS).then(resp =>
 	{
 		return resp.data
@@ -32,7 +29,6 @@ async function insertUtilisateur(utilisateur)
 
 async function getUtilisateurByLogin(login,password)
 {
-	//let url=urlConst+"/"+login
 	var url = urlConst + '?q={' + '"login":' + '"' + login + '"' + ',"password" :' + '"' + password + '"' + '}'
 	return await axios.get(url,db.DB_HEADERS).then(resp =>
 	{
@@ -42,8 +38,6 @@ async function getUtilisateurByLogin(login,password)
 		return fail
 	})
 }
-
-
 
 module.exports =
 {

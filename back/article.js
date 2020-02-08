@@ -65,7 +65,8 @@ async function deleteArticle(id)
 	})
 }
 
-module.exports = {
+module.exports = 
+{
   getArticles: getArticles,
   getArticle:getArticle,
   insertArticle: insertArticle,
