@@ -29,7 +29,7 @@ Liste des routes pour CRUD User :
 
 
 
-Pour installer le projet, il suffit de faire un "npm install" puis un "node idnex.js" dans le répertoire du projet.
+Pour installer le projet, il suffit de faire un "npm install" puis un "node index.js" dans le répertoire du projet.
 Ensuite, il faut créer un utilisateur, puis se loger afin de récupérer le jwt, pour ensuite le mettre dans les headers des requetes HTTP pour insert, update ou delete un article.
 
 
