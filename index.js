@@ -129,9 +129,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 {
 	let login = req.body.login
 	let password = req.body.password
-	if (!login || !password) res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+	if (!login || !password)
 	{
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
