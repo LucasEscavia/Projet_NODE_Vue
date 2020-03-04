@@ -32,6 +32,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async function(payload, next) {
 
 passport.use(jwtStrategy)
 
+var jwt=""
 const app = express()
 const PORT = process.env.PORT || 5000
 passport.use(JwtStrategy)
@@ -123,6 +124,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 	}
 	login(login,password)
+	res.json({ jwt: userJwt })
 })
 
 app.post('/login', urlEncodedParser,async function (req, res)
@@ -135,6 +137,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		return
 	}
 	login(login,mdp)
+	res.json({ jwt: userJwt })
 })
 
 async function login(login,password)
@@ -150,7 +153,7 @@ async function login(login,password)
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
 		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
-		res.json({ jwt: userJwt })
+		jwt=userJwt
 	}
 }
 function decryptPassword(password)
