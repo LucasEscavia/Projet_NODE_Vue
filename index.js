@@ -127,6 +127,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 
 app.post('/login', urlEncodedParser,async function (req, res)
 {
+	res.json(req.body)
 	let login = req.body.login
 	let password = req.body.password
 	if (!login || !password)
