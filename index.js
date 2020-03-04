@@ -136,7 +136,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
 	}
-	seLoger(login,password)
+	await seLoger(login,password)
 	if (jwtUser=="")
 	{
 		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
