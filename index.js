@@ -38,11 +38,12 @@ passport.use(JwtStrategy)
 
 app.use(cors())
 
-app.options('/*', function (request, response, next) {
-	response.header("Access-Control-Allow-Origin", "*");
-    	response.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    	response.send();
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+    	res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  	next();
+	res.send();
 });
 app.get('/', function (req, res) {
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
@@ -128,7 +129,9 @@ app.post('/login', urlEncodedParser,async function (req, res)
 {
 	let login = req.body.login
 	let password = req.body.password
-	if (!login || !password)
+	if (!login || !password) res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 	{
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
