@@ -35,4 +35,4 @@ Ensuite, il faut créer un utilisateur, puis se loger afin de récupérer le jwt
 
 URL GitHub : https://github.com/LucasEscavia/Projet_NODE_Vue
 
-URL Projet : https://dashboard.heroku.com/apps/projet-node-vue
+URL Projet : https://projet-node-vue.herokuapp.com

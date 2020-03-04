@@ -38,6 +38,12 @@ passport.use(JwtStrategy)
 
 app.use(cors())
 
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+    	res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  	next();
+});
 app.get('/', function (req, res) {
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
 })
@@ -98,7 +104,7 @@ app.get('/deleteArticle/:id',passport.authenticate('jwt', { session: false }), a
 	}
 })
 
-app.post('/insertUtilisateur/', async function (req, res)
+app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 {
 	let login = req.body.login
 	let password = req.body.password
