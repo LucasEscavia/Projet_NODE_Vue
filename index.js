@@ -122,7 +122,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 	{
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 	}
-	res.json(repInsertUtilisateur)
+	login(login,password)
 })
 
 app.post('/login', urlEncodedParser,async function (req, res)
@@ -134,6 +134,11 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
 	}
+	login(login,mdp)
+})
+
+function login(login,password)
+{
 	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
 	if (Object.entries(utilisateur).length === 0)
 	{
@@ -147,8 +152,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
 		res.json({ jwt: userJwt })
 	}
-})
-
+}
 function decryptPassword(password)
 {
 	let decipher = crypto.createDecipher(algorithme,cleDeChiffrement)
