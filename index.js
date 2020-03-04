@@ -137,7 +137,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
 	if (Object.entries(utilisateur).length === 0)
 	{
-		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
+		res.status(200).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
 		return
 	}
 	else
@@ -145,8 +145,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
 		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
-		res.json({ jwt: "ok" })
-		//res.json({ jwt: userJwt })
+		res.json({ jwt: userJwt })
 	}
 })
 
