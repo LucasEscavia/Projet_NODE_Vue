@@ -19,24 +19,19 @@ const jwtOptions =
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: secret
 }
-
 const jwtStrategy = new JwtStrategy(jwtOptions, async function(payload, next) {
   const utilisateur = await user.getUtilisateurByLogin(payload.login)
-  // const user = user.find(user => user.email === payload.user
   if (utilisateur) {
     next(null, utilisateur)
   } else {
     next(null, false)
   }
 })
-
 passport.use(jwtStrategy)
-
 var jwtUser=""
 const app = express()
 const PORT = process.env.PORT || 5000
 passport.use(JwtStrategy)
-
 app.use(cors())
 app.use(express.json());
 app.use(function(req, res, next) {
@@ -46,6 +41,7 @@ app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   	next();
 });
+
 app.get('/', function (req, res) {
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
 })
@@ -77,7 +73,6 @@ app.get('/updateArticle/:id.:titre.:description', passport.authenticate('jwt', {
 	if (unArticleBase.idUtilisateur!=req.user._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		//res.redirect('/');
 	}
 	else
 	{
@@ -97,7 +92,6 @@ app.get('/deleteArticle/:id',passport.authenticate('jwt', { session: false }), a
 	if (unArticleBase.idUtilisateur!=req.user._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
-		//res.redirect('/');
 	}
 	else
 	{
@@ -152,15 +146,8 @@ async function seLoger(login,password)
 	{
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
-		jwtUser = jwt.sign({ login: loginUtilisateur }, secret)
+		jwtUser = jwt.sign({ login: loginUtilisateur }, secret,{expiresIn:10})//changer le temps
 	}
-}
-function decryptPassword(password)
-{
-	let decipher = crypto.createDecipher(algorithme,cleDeChiffrement)
-	let dec = decipher.update(password,'hex','utf8')
-	dec =+ decipher.final('utf8')
-	return dec
 }
 
 function cryptPassword(password)
