@@ -127,7 +127,6 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 
 app.post('/login', urlEncodedParser,async function (req, res)
 {
-	res.json(req.body.login)
 	let login = req.body.login
 	let password = req.body.password
 	if (!login || !password)
@@ -146,7 +145,8 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
 		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
-		res.json({ jwt: userJwt })
+		res.json({ jwt: "ok" })
+		//res.json({ jwt: userJwt })
 	}
 })
 
