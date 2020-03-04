@@ -98,7 +98,7 @@ app.get('/deleteArticle/:id',passport.authenticate('jwt', { session: false }), a
 	}
 })
 
-app.post('/insertUtilisateur/', async function (req, res)
+app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 {
 	let login = req.body.login
 	let password = req.body.password
