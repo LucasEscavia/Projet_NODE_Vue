@@ -137,7 +137,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 	login(login,mdp)
 })
 
-function login(login,password)
+async function login(login,password)
 {
 	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
 	if (Object.entries(utilisateur).length === 0)
