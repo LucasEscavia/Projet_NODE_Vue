@@ -32,7 +32,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async function(payload, next) {
 
 passport.use(jwtStrategy)
 
-var jwt=""
+var jwtUser=""
 const app = express()
 const PORT = process.env.PORT || 5000
 passport.use(JwtStrategy)
@@ -123,8 +123,8 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 	{
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 	}
-	login(login,password)
-	res.json({ jwt: userJwt })
+	await seLoger(login,password)
+	res.json({ jwt: jwtUser })
 })
 
 app.post('/login', urlEncodedParser,async function (req, res)
@@ -136,24 +136,23 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
 	}
-	login(login,mdp)
-	res.json({ jwt: userJwt })
-})
-
-async function login(login,password)
-{
-	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
-	if (Object.entries(utilisateur).length === 0)
+	seLoger(login,password)
+	if (jwtUser=="")
 	{
 		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
 		return
 	}
-	else
+	res.json({ jwt: jwtUser })
+})
+
+async function seLoger(login,password)
+{
+	const utilisateur = await user.getUtilisateurByLoginAndPassword(login,cryptPassword(password))
+	if (Object.entries(utilisateur).length >0)
 	{
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
-		const userJwt = jwt.sign({ login: loginUtilisateur }, secret)
-		jwt=userJwt
+		jwtUser = jwt.sign({ login: loginUtilisateur }, secret)
 	}
 }
 function decryptPassword(password)
