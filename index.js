@@ -43,7 +43,6 @@ app.use(function(req, res, next) {
     	res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   	next();
-	res.send();
 });
 app.get('/', function (req, res) {
 	res.status(200).json({ message: '<h1>Bienvenue sur le blog de NodeVueJs !!! </h1>' })
