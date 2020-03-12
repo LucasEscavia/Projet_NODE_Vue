@@ -123,6 +123,15 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 
 app.post('/login', urlEncodedParser,async function (req, res)
 {
+	let jwtHeader=""
+	if(req.headers.authorization)
+	{
+		jwtHeader=JSON.stringify(req.headers.authorization).split(":")[1]
+	}
+	if (jwtHeader!="")
+	{
+		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
+	}
 	let login = req.body.login
 	let password = req.body.password
 	if (!login || !password)
@@ -131,7 +140,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		return
 	}
 	await seLoger(login,password)
-	if (jwtUser=="")
+	if (jwtUser==="")
 	{
 		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
 		return
