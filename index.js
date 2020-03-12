@@ -128,7 +128,7 @@ app.post('/login', urlEncodedParser,async function (req, res)
 	{
 		jwtHeader=JSON.stringify(req.headers.authorization).split(":")[1]
 	}
-	if (jwtHeader!="")
+	if (jwtHeader!="null")
 	{
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 	}
