@@ -123,7 +123,6 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 
 app.post('/login', urlEncodedParser,async function (req, res)
 {
-	
 	let login = req.body.login
 	let password = req.body.password
 	if (!login || !password)
@@ -131,19 +130,20 @@ app.post('/login', urlEncodedParser,async function (req, res)
 		res.status(401).json({ error: 'Veuillez renseigner un mot de passe et un login' })
 		return
 	}
-	let jwtHeader=""
+	await seLoger(login,password)
+	/*let jwtHeader=""
 	if(req.headers.authorization)
 	{
 		jwtHeader=JSON.stringify(req.headers.authorization).split(":")[1]
 	}
 	if (jwtHeader=="null"||jwtHeader=="")
 	{
-		await seLoger(login,password)
-		if (jwtUser==="")
-		{
-			res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
-			return
-		}
+		
+	}*/
+	if (jwtUser==="")
+	{
+		res.status(401).json({ error: 'login/mot de passe incorrect veuillez réessayer' })
+		return
 	}
 	res.json({ jwt: jwtUser })
 })
