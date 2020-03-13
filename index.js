@@ -80,7 +80,8 @@ app.get('/updateArticle/:id.:titre.:description', passport.authenticate('jwt', {
 		id:params.id,
 		titre:params.titre,
 		date: Date.now(),
-		description:params.description}
+		description:params.description,
+		idUtilisateur:req.user._id}
 		const articles = await article.updateArticle(unArticle)
 		res.json(articles)
 	}
