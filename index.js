@@ -155,7 +155,7 @@ async function seLoger(login,password)
 	{
 		let infoUtilisateur = utilisateur[0]
 		let loginUtilisateur = infoUtilisateur.login
-		jwtUser = jwt.sign({ login: loginUtilisateur }, secret,{expiresIn:10})//changer le temps
+		jwtUser = jwt.sign({ login: loginUtilisateur }, secret)//changer le temps
 	}
 }
 
