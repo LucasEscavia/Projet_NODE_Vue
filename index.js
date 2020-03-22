@@ -119,7 +119,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 		return
 	}
 	await seLoger(login,password)
-	res.json({ jwt: utilisateur.login })
+	res.json({ jwt: login })
 })
 
 app.post('/login', urlEncodedParser,async function (req, res)
