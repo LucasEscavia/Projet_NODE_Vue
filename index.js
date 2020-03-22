@@ -70,7 +70,7 @@ app.get('/insertArticle/:titre.:description',passport.authenticate('jwt', { sess
 app.get('/updateArticle/:id.:titre.:description', passport.authenticate('jwt', { session: false }),async function (req, res) {
 	let params=req.params
 	const unArticleBase = await article.getArticle(params.id)
-	if (unArticleBase.idUtilisateur!=req.user._id)
+	if (unArticleBase.idUtilisateur._id!=req.user._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 	}
@@ -89,7 +89,7 @@ app.get('/updateArticle/:id.:titre.:description', passport.authenticate('jwt', {
 app.get('/deleteArticle/:id',passport.authenticate('jwt', { session: false }), async function (req, res) {
 	let params=req.params
 	const unArticleBase = await article.getArticle(params.id)
-	if (unArticleBase.idUtilisateur!=req.user._id)
+	if (unArticleBase.idUtilisateur._id!=req.user._id)
 	{
 		res.status(401).json({ error: 'Vous n\'etes pas autorisé à faire cette action' })
 	}
