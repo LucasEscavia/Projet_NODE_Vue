@@ -62,7 +62,7 @@ app.get('/insertArticle/:titre.:description',passport.authenticate('jwt', { sess
 	titre:params.titre,
 	date: Date.now(),
 	description:params.description,
-	idUtilisateur:req.user._id}
+	idUtilisateur:req.user}
 	const repInsert=await article.insertArticle(unArticle)
 	res.json(repInsert)
 })
