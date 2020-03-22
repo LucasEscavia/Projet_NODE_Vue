@@ -116,6 +116,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 	if (repInsertUtilisateur == false)
 	{
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
+		return
 	}
 	await seLoger(login,password)
 	res.json({ jwt: utilisateur.login })
