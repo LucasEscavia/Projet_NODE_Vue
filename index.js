@@ -113,7 +113,7 @@ app.post('/insertUtilisateur/',urlEncodedParser, async function (req, res)
 		password:crypted
 	}
 	const repInsertUtilisateur=await user.insertUtilisateur(unUtilisateur)
-	if (repInsertUtilisateur == false)
+	if (repInsertUtilisateur === false)
 	{
 		res.status(500).json({ error: 'Une erreur s\'est produite veuillez reessayer' })
 		return
